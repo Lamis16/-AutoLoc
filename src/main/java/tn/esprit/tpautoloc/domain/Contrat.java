@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "contrat")
@@ -26,4 +28,13 @@ public class Contrat {
     private BigDecimal montantTotal;
 
     private Boolean valide;
+
+    // Un contrat est lié à une seule réservation (côté propriétaire)
+    @OneToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
+
+    // Un contrat peut avoir plusieurs paiements (côté inverse)
+    @OneToMany(mappedBy = "contrat")
+    private List<Paiement> paiements = new ArrayList<>();
 }

@@ -28,4 +28,9 @@ public class Paiement {
 
     @Enumerated(EnumType.STRING)
     private ModePaiement modePaiement; // ESPECES, CARTE, VIREMENT, CHEQUE
+
+    // Un paiement concerne un seul contrat (côté propriétaire)
+    @ManyToOne
+    @JoinColumn(name = "contrat_id")
+    private Contrat contrat;
 }

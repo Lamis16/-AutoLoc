@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "equipement")
 @Getter
@@ -19,4 +22,8 @@ public class Equipement {
     private Long idEquipement;
 
     private String libelle; // GPS, siège bébé, coffre de toit...
+
+    // Un équipement peut appartenir à plusieurs véhicules (côté inverse)
+    @ManyToMany(mappedBy = "equipements")
+    private List<Vehicule> vehicules = new ArrayList<>();
 }
