@@ -29,7 +29,7 @@ public class Client {
     private String numPermis;
     private LocalDate dateInscription;
 
-    // Un client peut effectuer plusieurs réservations (côté inverse)
+    // Un client peut effectuer plusieurs réservations
     @OneToMany(mappedBy = "client")
     private List<Reservation> reservations = new ArrayList<>();
 }

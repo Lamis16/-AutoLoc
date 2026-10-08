@@ -25,19 +25,17 @@ public class Reservation {
     private LocalDate dateFin;
 
     @Enumerated(EnumType.STRING)
-    private StatutReservation statut; // EN_ATTENTE, CONFIRMEE, ANNULEE, TERMINEE
+    private StatutReservation statut;
 
-    // Une réservation concerne un seul client (côté propriétaire)
+    // Une réservation concerne un seul client
     @ManyToOne
-    @JoinColumn(name = "client_id")
     private Client client;
 
-    // Une réservation concerne un seul véhicule (côté propriétaire)
+    // Une réservation concerne un seul véhicule
     @ManyToOne
-    @JoinColumn(name = "vehicule_id")
     private Vehicule vehicule;
 
-    // Une réservation génère un seul contrat (côté inverse)
+    // Une réservation génère un seul contrat
     @OneToOne(mappedBy = "reservation")
     private Contrat contrat;
 }

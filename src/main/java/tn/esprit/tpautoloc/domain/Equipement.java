@@ -21,9 +21,9 @@ public class Equipement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEquipement;
 
-    private String libelle; // GPS, siège bébé, coffre de toit...
+    private String libelle;
 
-    // Un équipement peut appartenir à plusieurs véhicules (côté inverse)
+    // Un équipement peut appartenir à plusieurs véhicules
     @ManyToMany(mappedBy = "equipements")
     private List<Vehicule> vehicules = new ArrayList<>();
 }

@@ -1,10 +1,7 @@
 package tn.esprit.tpautoloc.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import tn.esprit.tpautoloc.domain.enums.CategorieVehicule;
 import tn.esprit.tpautoloc.domain.enums.StatutVehicule;
 
@@ -36,25 +33,23 @@ public class Vehicule {
     @Enumerated(EnumType.STRING)
     private StatutVehicule statut;
 
-    // Un véhicule appartient à une seule agence (côté propriétaire)
     @ManyToOne
-    @JoinColumn(name = "agence_id")
+    @JoinColumn(name = "agence_id_agence")
     private Agence agence;
 
-    // Un véhicule peut être réservé plusieurs fois (côté inverse)
     @OneToMany(mappedBy = "vehicule")
     private List<Reservation> reservations = new ArrayList<>();
 
-    // Un véhicule peut avoir plusieurs maintenances (côté inverse)
-    @OneToMany(mappedBy = "vehicule")
+    //Cascade simple : maintenance liée au véhicule
+    @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL)
     private List<Maintenance> maintenances = new ArrayList<>();
 
-    // Un véhicule possède plusieurs équipements, partagés entre véhicules (côté propriétaire)
-    @ManyToMany
+    // Cascade simple : équipements liés au véhicule
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "vehicule_equipements",
-            joinColumns = @JoinColumn(name = "vehicule_id"),
-            inverseJoinColumns = @JoinColumn(name = "equipement_id")
+            joinColumns = @JoinColumn(name = "vehicules_id_vehicule"),
+            inverseJoinColumns = @JoinColumn(name = "equipements_id_equipement")
     )
     private List<Equipement> equipements = new ArrayList<>();
 }

@@ -24,17 +24,14 @@ public class Contrat {
     private Long idContrat;
 
     private LocalDate dateSignature;
-
     private BigDecimal montantTotal;
-
     private Boolean valide;
 
-    // Un contrat est lié à une seule réservation (côté propriétaire)
+    // Un contrat est lié à une seule réservation
     @OneToOne
-    @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
-    // Un contrat peut avoir plusieurs paiements (côté inverse)
+    // Un contrat peut avoir plusieurs paiements
     @OneToMany(mappedBy = "contrat")
     private List<Paiement> paiements = new ArrayList<>();
 }

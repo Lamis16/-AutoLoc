@@ -23,14 +23,12 @@ public class Paiement {
     private Long idPaiement;
 
     private BigDecimal montant;
-
     private LocalDate datePaiement;
 
     @Enumerated(EnumType.STRING)
-    private ModePaiement modePaiement; // ESPECES, CARTE, VIREMENT, CHEQUE
+    private ModePaiement modePaiement;
 
-    // Un paiement concerne un seul contrat (côté propriétaire)
+    // Un paiement concerne un seul contrat
     @ManyToOne
-    @JoinColumn(name = "contrat_id")
     private Contrat contrat;
 }

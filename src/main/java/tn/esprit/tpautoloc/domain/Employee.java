@@ -23,10 +23,9 @@ public class Employee {
     private String prenom;
 
     @Enumerated(EnumType.STRING)
-    private RoleEmploye role; // AGENT, MANAGER
+    private RoleEmploye role;
 
-    // Un employé appartient à une seule agence (côté propriétaire)
+    // Un employé appartient à une seule agence
     @ManyToOne
-    @JoinColumn(name = "agence_id")
     private Agence agence;
 }

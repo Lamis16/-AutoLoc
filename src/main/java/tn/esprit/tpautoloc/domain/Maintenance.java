@@ -24,8 +24,7 @@ public class Maintenance {
     private LocalDate dateFin;
     private String description;
 
-    // Une maintenance concerne un seul véhicule (côté propriétaire)
+    // Une maintenance concerne un seul véhicule
     @ManyToOne
-    @JoinColumn(name = "vehicule_id")
     private Vehicule vehicule;
 }
