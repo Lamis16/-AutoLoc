@@ -36,6 +36,6 @@ public class Reservation {
     private Vehicule vehicule;
 
     // Une réservation génère un seul contrat
-    @OneToOne(mappedBy = "reservation")
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private Contrat contrat;
 }
