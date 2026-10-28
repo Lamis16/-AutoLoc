@@ -2,6 +2,7 @@ package tn.esprit.tpautoloc.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.tpautoloc.domain.Paiement;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IPaiementRepository;
@@ -17,12 +18,16 @@ public class PaiementServiceImpl implements IPaiementService {
 
     @Override
     public Paiement findById(Long id) {
-        return paiementRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Paiement", id));
+        return paiementRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Paiement", id));
     }
 
     @Override
-    public List<Paiement> findAll() {
-        return paiementRepository.findAll();
+    public List<Paiement> findAll() { return paiementRepository.findAll(); }
+
+    // Optionnel : si tu veux ajouter une suppression manuelle (hors cascade)
+    @Transactional
+    public void deleteById(Long id) {
+        Paiement p = findById(id);
+        paiementRepository.delete(p);
     }
 }

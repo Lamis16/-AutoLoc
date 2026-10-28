@@ -1,10 +1,8 @@
 package tn.esprit.tpautoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,11 +25,12 @@ public class Contrat {
     private BigDecimal montantTotal;
     private Boolean valide;
 
-    // Un contrat est lié à une seule réservation
     @OneToOne
+    @JoinColumn(name = "reservation_id_reservation")
     private Reservation reservation;
 
-    // Un contrat peut avoir plusieurs paiements
-    @OneToMany(mappedBy = "contrat")
+    //  Gère la boucle JSON côté parent
+    @OneToMany(mappedBy = "contrat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("contrat-paiements")
     private List<Paiement> paiements = new ArrayList<>();
 }

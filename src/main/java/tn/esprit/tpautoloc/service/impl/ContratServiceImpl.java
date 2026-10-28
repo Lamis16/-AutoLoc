@@ -2,9 +2,11 @@ package tn.esprit.tpautoloc.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.tpautoloc.domain.Contrat;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IContratRepository;
+import tn.esprit.tpautoloc.repository.IReservationRepository;
 import tn.esprit.tpautoloc.service.IContratService;
 
 import java.math.BigDecimal;
@@ -15,6 +17,7 @@ import java.util.List;
 public class ContratServiceImpl implements IContratService {
 
     private final IContratRepository contratRepository;
+    private final IReservationRepository reservationRepository; // 👈 AJOUT INDISPENSABLE
 
     @Override
     public Contrat create(Contrat contrat) {
@@ -47,15 +50,21 @@ public class ContratServiceImpl implements IContratService {
         existant.setDateSignature(contrat.getDateSignature());
         existant.setMontantTotal(contrat.getMontantTotal());
         existant.setValide(contrat.getValide());
-        // Ne pas toucher à l'id ni aux paiements (cascade)
         return contratRepository.save(existant);
     }
 
     @Override
+    @Transactional // 👈 AJOUT INDISPENSABLE POUR QUE LA SUPPRESSION FONCTIONNE
     public void deleteById(Long id) {
-        if (!contratRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Contrat", id);
+        Contrat contrat = findById(id); // 1. On récupère le contrat
+
+        // 2. On détache le contrat de sa réservation pour éviter l'erreur de clé étrangère
+        if (contrat.getReservation() != null) {
+            contrat.getReservation().setContrat(null);
+            reservationRepository.save(contrat.getReservation());
         }
-        contratRepository.deleteById(id);
+
+        // 3. On supprime le contrat (ce qui supprimera les paiements en cascade)
+        contratRepository.delete(contrat);
     }
 }

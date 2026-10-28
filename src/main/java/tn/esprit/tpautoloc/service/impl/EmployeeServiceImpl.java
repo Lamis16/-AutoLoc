@@ -16,45 +16,32 @@ public class EmployeeServiceImpl implements IEmployeeService {
     private final IEmployeeRepository employeeRepository;
 
     @Override
-    public Employee create(Employee employee) {
-        if (employee.getIdEmployee() != null) {
-            throw new IllegalArgumentException("Un nouvel employé ne doit pas avoir d'identifiant");
-        }
-        if (employee.getNom() == null || employee.getNom().isBlank()) {
-            throw new IllegalArgumentException("Le nom de l'employé est obligatoire");
-        }
-        return employeeRepository.save(employee);
+    public Employee create(Employee e) {
+        if (e.getIdEmployee() != null) throw new IllegalArgumentException("Un nouvel employé ne doit pas avoir d'identifiant");
+        if (e.getNom() == null || e.getNom().isBlank()) throw new IllegalArgumentException("Le nom est obligatoire");
+        return employeeRepository.save(e);
     }
 
     @Override
     public Employee findById(Long id) {
-        return employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee", id));
+        return employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee", id));
     }
 
     @Override
-    public List<Employee> findAll() {
-        return employeeRepository.findAll();
-    }
+    public List<Employee> findAll() { return employeeRepository.findAll(); }
 
     @Override
-    public Employee update(Long id, Employee employee) {
+    public Employee update(Long id, Employee e) {
         Employee existant = findById(id);
-        if (employee.getNom() == null || employee.getNom().isBlank()) {
-            throw new IllegalArgumentException("Le nom de l'employé est obligatoire");
-        }
-        existant.setNom(employee.getNom());
-        existant.setPrenom(employee.getPrenom());
-        existant.setRole(employee.getRole());
-        existant.setAgence(employee.getAgence());
+        existant.setNom(e.getNom());
+        existant.setPrenom(e.getPrenom());
+        existant.setRole(e.getRole());
         return employeeRepository.save(existant);
     }
 
     @Override
     public void deleteById(Long id) {
-        if (!employeeRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Employee", id);
-        }
+        if (!employeeRepository.existsById(id)) throw new ResourceNotFoundException("Employee", id);
         employeeRepository.deleteById(id);
     }
 }

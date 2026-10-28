@@ -1,5 +1,6 @@
 package tn.esprit.tpautoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import tn.esprit.tpautoloc.domain.enums.CategorieVehicule;
@@ -38,10 +39,12 @@ public class Vehicule {
     private Agence agence;
 
     @OneToMany(mappedBy = "vehicule")
+    @JsonIgnore
     private List<Reservation> reservations = new ArrayList<>();
 
     //Cascade simple : maintenance liée au véhicule
     @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Maintenance> maintenances = new ArrayList<>();
 
     // Cascade simple : équipements liés au véhicule
@@ -51,5 +54,6 @@ public class Vehicule {
             joinColumns = @JoinColumn(name = "vehicules_id_vehicule"),
             inverseJoinColumns = @JoinColumn(name = "equipements_id_equipement")
     )
+    @JsonIgnore
     private List<Equipement> equipements = new ArrayList<>();
 }

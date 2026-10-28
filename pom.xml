@@ -58,11 +58,18 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- ===== ✅ TESTS : JUnit 5 + Spring Boot Test ===== -->
+        <!-- =====  TESTS : JUnit 5 + Spring Boot Test ===== -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- SpringDoc OpenAPI / Swagger UI -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
         </dependency>
     </dependencies>
 

@@ -1,10 +1,8 @@
 package tn.esprit.tpautoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import tn.esprit.tpautoloc.domain.enums.ModePaiement;
 
 import java.math.BigDecimal;
@@ -28,7 +26,9 @@ public class Paiement {
     @Enumerated(EnumType.STRING)
     private ModePaiement modePaiement;
 
-    // Un paiement concerne un seul contrat
+    // Coupe la boucle JSON côté enfant
     @ManyToOne
+    @JoinColumn(name = "contrat_id_contrat")
+    @JsonBackReference("contrat-paiements")
     private Contrat contrat;
 }
