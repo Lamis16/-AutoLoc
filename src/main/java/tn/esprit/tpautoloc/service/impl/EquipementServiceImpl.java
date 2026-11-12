@@ -45,7 +45,6 @@ public class EquipementServiceImpl implements IEquipementService {
     @Transactional
     public void deleteById(Long id) {
         Equipement e = findById(id);
-        // Retirer cet équipement de tous les véhicules qui le possèdent
         if (e.getVehicules() != null) {
             for (Vehicule v : e.getVehicules()) {
                 v.getEquipements().remove(e);

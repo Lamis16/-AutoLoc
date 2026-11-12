@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Vehicules", description = "Gestion des véhicules")
 public class VehiculeController {
+
     private final IVehiculeService vehiculeService;
 
     @GetMapping
@@ -51,4 +52,25 @@ public class VehiculeController {
     @ApiResponse(responseCode = "204", description = "Véhicule supprimé")
     @ApiResponse(responseCode = "404", description = "Véhicule introuvable", content = @Content)
     public void delete(@PathVariable Long id) { vehiculeService.deleteById(id); }
+
+    // ==========================================
+    // NOUVEAUX ENDPOINTS - ATELIER 7
+    // ==========================================
+
+    @PutMapping("/{vehiculeId}/agence/{agenceId}")
+    @Operation(summary = "Affecter un véhicule à une agence")
+    @ApiResponse(responseCode = "200", description = "Affectation réussie")
+    @ApiResponse(responseCode = "404", description = "Véhicule ou Agence introuvable", content = @Content)
+    public void affecterVehiculeAAgence(@PathVariable Long vehiculeId, @PathVariable Long agenceId) {
+        vehiculeService.affecterVehiculeAAgence(vehiculeId, agenceId);
+    }
+
+    @PutMapping("/{vehiculeId}/desaffecter")
+    @Operation(summary = "Désaffecter un véhicule de son agence")
+    @ApiResponse(responseCode = "200", description = "Désaffectation réussie")
+    @ApiResponse(responseCode = "400", description = "Le véhicule n'a pas d'agence", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Véhicule introuvable", content = @Content)
+    public void desaffecterVehiculeDeAgence(@PathVariable Long vehiculeId) {
+        vehiculeService.desaffecterVehiculeDeAgence(vehiculeId);
+    }
 }

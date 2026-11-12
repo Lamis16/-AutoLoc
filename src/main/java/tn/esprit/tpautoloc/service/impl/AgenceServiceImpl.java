@@ -52,15 +52,12 @@ public class AgenceServiceImpl implements IAgenceService {
     @Transactional
     public void deleteById(Long id) {
         Agence agence = findById(id);
-
-        // Détacher les véhicules
         if (agence.getVehicules() != null) {
             for (Vehicule v : agence.getVehicules()) {
                 v.setAgence(null);
                 vehiculeRepository.save(v);
             }
         }
-        // Détacher les employés
         if (agence.getEmployees() != null) {
             for (Employee e : agence.getEmployees()) {
                 e.setAgence(null);

@@ -1,7 +1,6 @@
 package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Employee;
-
 import java.util.List;
 
 public interface IEmployeeService {
@@ -10,4 +9,8 @@ public interface IEmployeeService {
     List<Employee> findAll();
     Employee update(Long id, Employee employee);
     void deleteById(Long id);
+
+    //  Nouvelles méthodes
+    void affecterEmployeeAAgence(Long employeeId, Long agenceId);
+    void desaffecterEmployeeDeAgence(Long employeeId);
 }

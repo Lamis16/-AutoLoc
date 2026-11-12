@@ -2,8 +2,11 @@ package tn.esprit.tpautoloc.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tn.esprit.tpautoloc.domain.Agence;
 import tn.esprit.tpautoloc.domain.Employee;
 import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
+import tn.esprit.tpautoloc.repository.IAgenceRepository;
 import tn.esprit.tpautoloc.repository.IEmployeeRepository;
 import tn.esprit.tpautoloc.service.IEmployeeService;
 
@@ -14,6 +17,7 @@ import java.util.List;
 public class EmployeeServiceImpl implements IEmployeeService {
 
     private final IEmployeeRepository employeeRepository;
+    private final IAgenceRepository agenceRepository; // 👈 Ajouté
 
     @Override
     public Employee create(Employee e) {
@@ -43,5 +47,36 @@ public class EmployeeServiceImpl implements IEmployeeService {
     public void deleteById(Long id) {
         if (!employeeRepository.existsById(id)) throw new ResourceNotFoundException("Employee", id);
         employeeRepository.deleteById(id);
+    }
+
+    // ==========================================
+    // NOUVELLES MÉTHODES - ATELIER 7
+    // ==========================================
+
+    @Override
+    @Transactional
+    public void affecterEmployeeAAgence(Long employeeId, Long agenceId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee introuvable avec l'id : " + employeeId));
+
+        Agence agence = agenceRepository.findById(agenceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable avec l'id : " + agenceId));
+
+        employee.setAgence(agence);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transactional
+    public void desaffecterEmployeeDeAgence(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee introuvable avec l'id : " + employeeId));
+
+        if (employee.getAgence() == null) {
+            throw new IllegalArgumentException("L'employé n'est rattaché à aucune agence.");
+        }
+
+        employee.setAgence(null);
+        employeeRepository.save(employee);
     }
 }

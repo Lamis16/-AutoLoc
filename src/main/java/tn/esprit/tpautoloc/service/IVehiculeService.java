@@ -1,7 +1,6 @@
 package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Vehicule;
-
 import java.util.List;
 
 public interface IVehiculeService {
@@ -10,4 +9,8 @@ public interface IVehiculeService {
     List<Vehicule> findAll();
     Vehicule update(Long id, Vehicule vehicule);
     void deleteById(Long id);
+
+    // 👇 Nouvelles méthodes (Atelier 7)
+    void affecterVehiculeAAgence(Long vehiculeId, Long agenceId);
+    void desaffecterVehiculeDeAgence(Long vehiculeId);
 }

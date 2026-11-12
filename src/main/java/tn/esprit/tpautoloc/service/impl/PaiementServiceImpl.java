@@ -24,7 +24,6 @@ public class PaiementServiceImpl implements IPaiementService {
     @Override
     public List<Paiement> findAll() { return paiementRepository.findAll(); }
 
-    // Optionnel : si tu veux ajouter une suppression manuelle (hors cascade)
     @Transactional
     public void deleteById(Long id) {
         Paiement p = findById(id);

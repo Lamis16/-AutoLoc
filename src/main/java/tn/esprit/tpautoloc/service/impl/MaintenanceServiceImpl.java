@@ -45,6 +45,6 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
     @Override
     public void deleteById(Long id) {
         if (!maintenanceRepository.existsById(id)) throw new ResourceNotFoundException("Maintenance", id);
-        maintenanceRepository.deleteById(id); // Pas de cascade, suppression simple
+        maintenanceRepository.deleteById(id);
     }
 }

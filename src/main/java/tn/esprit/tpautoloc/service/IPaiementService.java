@@ -1,7 +1,6 @@
 package tn.esprit.tpautoloc.service;
 
 import tn.esprit.tpautoloc.domain.Paiement;
-
 import java.util.List;
 
 public interface IPaiementService {

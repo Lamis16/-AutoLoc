@@ -17,18 +17,15 @@ import java.util.List;
 public class ContratServiceImpl implements IContratService {
 
     private final IContratRepository contratRepository;
-    private final IReservationRepository reservationRepository; // 👈 AJOUT INDISPENSABLE
+    private final IReservationRepository reservationRepository;
 
     @Override
     public Contrat create(Contrat contrat) {
         if (contrat.getIdContrat() != null) {
-            throw new IllegalArgumentException(
-                    "Un nouveau contrat ne doit pas avoir d'identifiant");
+            throw new IllegalArgumentException("Un nouveau contrat ne doit pas avoir d'identifiant");
         }
-        if (contrat.getMontantTotal() != null
-                && contrat.getMontantTotal().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(
-                    "Le montant total d'un contrat ne peut pas être négatif");
+        if (contrat.getMontantTotal() != null && contrat.getMontantTotal().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Le montant total d'un contrat ne peut pas être négatif");
         }
         return contratRepository.save(contrat);
     }
@@ -54,17 +51,13 @@ public class ContratServiceImpl implements IContratService {
     }
 
     @Override
-    @Transactional // 👈 AJOUT INDISPENSABLE POUR QUE LA SUPPRESSION FONCTIONNE
+    @Transactional
     public void deleteById(Long id) {
-        Contrat contrat = findById(id); // 1. On récupère le contrat
-
-        // 2. On détache le contrat de sa réservation pour éviter l'erreur de clé étrangère
+        Contrat contrat = findById(id);
         if (contrat.getReservation() != null) {
             contrat.getReservation().setContrat(null);
             reservationRepository.save(contrat.getReservation());
         }
-
-        // 3. On supprime le contrat (ce qui supprimera les paiements en cascade)
         contratRepository.delete(contrat);
     }
 }

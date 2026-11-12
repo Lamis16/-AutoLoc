@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Employes", description = "Gestion des employés")
 public class EmployeeController {
+
     private final IEmployeeService employeeService;
 
     @GetMapping
@@ -51,4 +52,26 @@ public class EmployeeController {
     @ApiResponse(responseCode = "204", description = "Employé supprimé")
     @ApiResponse(responseCode = "404", description = "Employé introuvable", content = @Content)
     public void delete(@PathVariable Long id) { employeeService.deleteById(id); }
+
+    // ==========================================
+    // NOUVEAUX ENDPOINTS - ATELIER 7
+    // ==========================================
+
+    @PutMapping("/{employeeId}/agence/{agenceId}")
+    @Operation(summary = "Affecter un employé à une agence")
+    @ApiResponse(responseCode = "200", description = "Affectation réussie")
+    @ApiResponse(responseCode = "404", description = "Employé ou Agence introuvable", content = @Content)
+    public void affecterEmployeeAAgence(@PathVariable Long employeeId, @PathVariable Long agenceId) {
+        employeeService.affecterEmployeeAAgence(employeeId, agenceId);
+    }
+
+    @PutMapping("/{employeeId}/desaffecter")
+    @Operation(summary = "Désaffecter un employé de son agence")
+    @ApiResponse(responseCode = "200", description = "Désaffectation réussie")
+    @ApiResponse(responseCode = "400", description = "L'employé n'a pas d'agence", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Employé introuvable", content = @Content)
+    public void desaffecterEmployeeDeAgence(@PathVariable Long employeeId) {
+        employeeService.desaffecterEmployeeDeAgence(employeeId);
+    }
+
 }
