@@ -9,6 +9,8 @@ import tn.esprit.tpautoloc.exception.ResourceNotFoundException;
 import tn.esprit.tpautoloc.repository.IAgenceRepository;
 import tn.esprit.tpautoloc.repository.IEmployeeRepository;
 import tn.esprit.tpautoloc.service.IEmployeeService;
+import tn.esprit.tpautoloc.web.dto.EmployeeDTO;
+import tn.esprit.tpautoloc.web.mapper.EmployeeMapper;
 
 import java.util.List;
 
@@ -17,30 +19,38 @@ import java.util.List;
 public class EmployeeServiceImpl implements IEmployeeService {
 
     private final IEmployeeRepository employeeRepository;
-    private final IAgenceRepository agenceRepository; // 👈 Ajouté
+    private final IAgenceRepository agenceRepository;
+    private final EmployeeMapper employeeMapper;
 
     @Override
-    public Employee create(Employee e) {
-        if (e.getIdEmployee() != null) throw new IllegalArgumentException("Un nouvel employé ne doit pas avoir d'identifiant");
-        if (e.getNom() == null || e.getNom().isBlank()) throw new IllegalArgumentException("Le nom est obligatoire");
-        return employeeRepository.save(e);
+    public EmployeeDTO create(EmployeeDTO dto) {
+        if (dto.getId() != null) throw new IllegalArgumentException("Un nouvel employé ne doit pas avoir d'identifiant");
+        if (dto.getNom() == null || dto.getNom().isBlank()) throw new IllegalArgumentException("Le nom est obligatoire");
+        Employee e = employeeMapper.toEntity(dto);
+        if (dto.getAgenceId() != null) {
+            Agence a = agenceRepository.findById(dto.getAgenceId()).orElseThrow(() -> new ResourceNotFoundException("Agence", dto.getAgenceId()));
+            e.setAgence(a);
+        }
+        return employeeMapper.toDto(employeeRepository.save(e));
     }
 
     @Override
-    public Employee findById(Long id) {
-        return employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee", id));
+    public EmployeeDTO findById(Long id) {
+        return employeeMapper.toDto(employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee", id)));
     }
 
     @Override
-    public List<Employee> findAll() { return employeeRepository.findAll(); }
+    public List<EmployeeDTO> findAll() {
+        return employeeRepository.findAll().stream().map(employeeMapper::toDto).toList();
+    }
 
     @Override
-    public Employee update(Long id, Employee e) {
-        Employee existant = findById(id);
-        existant.setNom(e.getNom());
-        existant.setPrenom(e.getPrenom());
-        existant.setRole(e.getRole());
-        return employeeRepository.save(existant);
+    public EmployeeDTO update(Long id, EmployeeDTO dto) {
+        Employee existant = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee", id));
+        existant.setNom(dto.getNom());
+        existant.setPrenom(dto.getPrenom());
+        existant.setRole(dto.getRole());
+        return employeeMapper.toDto(employeeRepository.save(existant));
     }
 
     @Override
@@ -49,34 +59,21 @@ public class EmployeeServiceImpl implements IEmployeeService {
         employeeRepository.deleteById(id);
     }
 
-    // ==========================================
-    // NOUVELLES MÉTHODES - ATELIER 7
-    // ==========================================
-
     @Override
     @Transactional
     public void affecterEmployeeAAgence(Long employeeId, Long agenceId) {
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee introuvable avec l'id : " + employeeId));
-
-        Agence agence = agenceRepository.findById(agenceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable avec l'id : " + agenceId));
-
-        employee.setAgence(agence);
-        employeeRepository.save(employee);
+        Employee e = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee", employeeId));
+        Agence a = agenceRepository.findById(agenceId).orElseThrow(() -> new ResourceNotFoundException("Agence", agenceId));
+        e.setAgence(a);
+        employeeRepository.save(e);
     }
 
     @Override
     @Transactional
     public void desaffecterEmployeeDeAgence(Long employeeId) {
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee introuvable avec l'id : " + employeeId));
-
-        if (employee.getAgence() == null) {
-            throw new IllegalArgumentException("L'employé n'est rattaché à aucune agence.");
-        }
-
-        employee.setAgence(null);
-        employeeRepository.save(employee);
+        Employee e = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee", employeeId));
+        if (e.getAgence() == null) throw new IllegalArgumentException("L'employé n'est rattaché à aucune agence.");
+        e.setAgence(null);
+        employeeRepository.save(e);
     }
 }

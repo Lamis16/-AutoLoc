@@ -35,3 +35,7 @@
 3. **Pourquoi POST = 201 et DELETE = 204 ?** POST crée une ressource (201 Created). DELETE la supprime et il n'y a plus rien à retourner (204 No Content). Une ressource absente donne 404 (Not Found) car c'est une erreur côté client, pas une erreur serveur (500).
 4. **Pourquoi PaiementController n'a-t-il que des GET ?** Car les paiements sont gérés exclusivement via le Contrat (cascade). Un POST sur /paiements renvoie une erreur **405 Method Not Allowed**.
 5. **Risques d'exposer les entités JPA ?** Cela expose la structure de la base de données et peut créer des problèmes de sécurité ou de performance. @JsonManagedReference est utilisé pour afficher les enfants (paiements), @JsonIgnore pour cacher les relations inutiles (véhicules d'une agence).
+
+| Fichier | Anomalie | Règle | Explication | Correction |
+| :--- | :--- | :--- | :--- | :--- |
+| `ContratServiceImpl.java` (ou autre) | Explicitly specify the time zone by passing a ZoneId or a Clock to the .now() method. | S6353 | `LocalDate.now()` utilise le fuseau horaire par défaut de la JVM, ce qui peut poser problème si le serveur change de fuseau. | Remplacement par `LocalDate.now(ZoneId.systemDefault())` ou `LocalDate.now(ZoneId.of("Africa/Tunis"))`. |
